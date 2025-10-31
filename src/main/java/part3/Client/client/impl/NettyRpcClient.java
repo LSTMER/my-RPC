@@ -18,10 +18,12 @@ import part3.Client.client.RpcClient;
 import part3.Client.netty.nettyInitializer.NettyClientInitializer;
 import part3.Client.serviceCenter.ServiceCenter;
 import part3.Client.serviceCenter.ZKServiceCenter;
+import part3.common.loadbalance.impl.ConsistencyHashBalance;
 import part3.common.message.RpcRequest;
 import part3.common.message.RpcResponse;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 
 @Slf4j
 public class NettyRpcClient implements RpcClient {
@@ -29,7 +31,7 @@ public class NettyRpcClient implements RpcClient {
     private static final Bootstrap bootstrap;
     private static final EventLoopGroup eventLoopGroup;
     public NettyRpcClient(){
-        serviceCenter = new ZKServiceCenter();
+        serviceCenter = new ZKServiceCenter(new ConsistencyHashBalance());
     }
 
     //netty客户端初始化

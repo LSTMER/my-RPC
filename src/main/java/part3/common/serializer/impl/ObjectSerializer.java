@@ -7,16 +7,36 @@ package part3.common.serializer.impl;/*
 
 import part3.common.serializer.Serializer;
 
+import java.io.*;
+
 public class ObjectSerializer implements Serializer {
 
     @Override
     public byte[] serializer(Object obj) {
-        return new byte[0];
+        byte[] bytes = null;
+        try (
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(bos);
+             ){
+            oos.writeObject(obj);
+            oos.flush();
+            bytes = bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bytes;
     }
 
     @Override
-    public Object deserializer(byte[] bytes) {
-        return null;
+    public <T> T deserializer(byte[] bytes, Class<T> clazz) {
+        Object object = null;
+        try(ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
+        ObjectInputStream ois = new ObjectInputStream(bis)){
+            object = ois.readObject();
+        }catch (IOException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+        return (T)object;
     }
 
     @Override

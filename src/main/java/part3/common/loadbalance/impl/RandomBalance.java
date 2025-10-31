@@ -18,14 +18,4 @@ public class RandomBalance implements LoadBalance {
         int num = random.nextInt(size);
         return addressList.get(num);
     }
-
-    @Override
-    public void addNode(String node) {
-
-    }
-
-    @Override
-    public void removeNode(String node) {
-
-    }
 }

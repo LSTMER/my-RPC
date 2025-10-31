@@ -18,14 +18,4 @@ public class RoundBalance implements LoadBalance {
         count++;
         return addressList.get(next);
     }
-
-    @Override
-    public void addNode(String node) {
-
-    }
-
-    @Override
-    public void removeNode(String node) {
-
-    }
 }

@@ -27,7 +27,7 @@ import java.util.List;
 public class ZKServiceCenter implements ServiceCenter{
 
     /*zookeeper client*/
-    private CuratorFramework client;
+    private final CuratorFramework client;
 
     private final ServiceCache cache;
 
@@ -40,7 +40,6 @@ public class ZKServiceCenter implements ServiceCenter{
                 .sessionTimeoutMs(40000).retryPolicy(policy).namespace(ROOT_PATH).build();
         this.client.start();
         log.info("zookeeper client connect successfully...");
-
         cache = new ServiceCache();
         Watcher watcher = new Watcher(cache, client);
         watcher.startWatching();

@@ -10,7 +10,7 @@ import part3.common.serializer.impl.ObjectSerializer;
 
 public interface Serializer {
     byte[] serializer(Object obj);
-    Object deserializer(byte[] bytes);
+    <T> T deserializer(byte[] bytes, Class<T> obj);
 
     int getType();
     static Serializer getSerializer(int code){

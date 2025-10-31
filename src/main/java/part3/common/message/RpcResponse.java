@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class RpcResponse implements Serializable {
     private int code;
     private String message;
-
+    private Class<?> dataType;
     private Object data;
 
     public static RpcResponse success(Object data){
@@ -27,6 +27,7 @@ public class RpcResponse implements Serializable {
                 .code(200)
                 .message("success")
                 .data(data)
+                .dataType(data.getClass())
                 .build();
     }
 
