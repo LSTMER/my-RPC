@@ -7,14 +7,15 @@ package part3.common.message;/*
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 @Data
 @Builder
+@Slf4j
 public class RpcResponse implements Serializable {
-    private static final Logger log = LoggerFactory.getLogger(RpcResponse.class);
     private int code;
     private String message;
 

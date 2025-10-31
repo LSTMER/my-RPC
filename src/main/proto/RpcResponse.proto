@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "part3.common.message";
+option java_outer_classname = "RpcResponseProto";
+
+message RpcResponse{
+  int32 code = 1;
+  string message = 2;
+  bytes data = 3;
+}

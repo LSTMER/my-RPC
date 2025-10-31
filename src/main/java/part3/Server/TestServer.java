@@ -12,7 +12,7 @@ import part3.common.service.impl.UserServiceImpl;
 
 public class TestServer {
     public static void main(String[] args) {
-        ServiceProvider provider = new ServiceProvider();
+        ServiceProvider provider = new ServiceProvider("127.0.0.1",8888);
         provider.registerService(new UserServiceImpl());
 
         RpcServer server = new NettyRpcServer(provider);

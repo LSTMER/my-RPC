@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "part3.common.pojo";
+option java_outer_classname = "UserProto";
+
+message User{
+  int32 id = 1;
+  string username = 2;
+  bool sex = 3;
+}

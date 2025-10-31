@@ -16,16 +16,21 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import part3.Client.client.RpcClient;
 import part3.Client.netty.nettyInitializer.NettyClientInitializer;
+import part3.Client.serviceCenter.ServiceCenter;
+import part3.Client.serviceCenter.ZKServiceCenter;
 import part3.common.message.RpcRequest;
 import part3.common.message.RpcResponse;
 
+import java.net.InetSocketAddress;
+
 @Slf4j
-@AllArgsConstructor
 public class NettyRpcClient implements RpcClient {
-    private String host;
-    private int port;
+    private ServiceCenter serviceCenter;
     private static final Bootstrap bootstrap;
     private static final EventLoopGroup eventLoopGroup;
+    public NettyRpcClient(){
+        serviceCenter = new ZKServiceCenter();
+    }
 
     //netty客户端初始化
     static {
@@ -38,8 +43,10 @@ public class NettyRpcClient implements RpcClient {
     @Override
     public RpcResponse sendRequest(RpcRequest request) {
         try {
+            String serviceName = request.getInterfaceName();
             //创建一个channelFuture对象，代表这一个操作事件，sync方法表示堵塞直到connect完成
-            ChannelFuture channelFuture  = bootstrap.connect(host, port).sync();
+            InetSocketAddress address = serviceCenter.serviceDiscovery(serviceName);
+            ChannelFuture channelFuture  = bootstrap.connect(address).sync();
             //channel表示一个连接的单位，类似socket
             Channel channel = channelFuture.channel();
             // 发送数据
