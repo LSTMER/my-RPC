@@ -1,0 +1,66 @@
+package com.hitsz.simon.Server.server.impl;/*
+ *@Author:Simon
+ *@Date: 2025-09-25 - 2025 09 25 14:04
+ *@Description:version1
+ *@version:1.0
+ */
+
+import com.hitsz.simon.Server.netty.nettyInitializer.NettyServerInitializer;
+import com.hitsz.simon.Server.provider.ServiceProvider;
+import com.hitsz.simon.Server.server.RpcServer;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
+public class NettyRpcServer implements RpcServer {
+
+    private final ServiceProvider serviceProvider;
+    private ChannelFuture channelFuture;
+
+    public NettyRpcServer(ServiceProvider serviceProvider){
+        this.serviceProvider = serviceProvider;
+    }
+
+    @Override
+    public void start(int port){
+        // netty 服务线程组boss负责建立连接， work负责具体的请求
+        NioEventLoopGroup bossGroup = new NioEventLoopGroup();
+        NioEventLoopGroup workGroup = new NioEventLoopGroup();
+        log.info("server is booting...");
+        try {
+            //启动netty服务器
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            //初始化
+            serverBootstrap.group(bossGroup,workGroup).channel(NioServerSocketChannel.class)
+                    //NettyClientInitializer这里 配置netty对消息的处理机制
+                    .childHandler(new NettyServerInitializer(serviceProvider));
+            //同步堵塞
+            ChannelFuture channelFuture=serverBootstrap.bind(port).sync();
+            //死循环监听
+            channelFuture.channel().closeFuture().sync();
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }finally {
+            bossGroup.shutdownGracefully();
+            workGroup.shutdownGracefully();
+        }
+    }
+
+    @Override
+    public void stop(){
+        if(channelFuture != null){
+            try {
+                channelFuture.channel().close().sync();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.error("server thread is interrupted while closing...");
+            }
+        }else {
+            log.warn("server channel is not running...");
+        }
+    }
+}
